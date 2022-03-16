@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Driver xmlns="http://code.google.com/p/open-zwave/" version="3" home_id="0xd49e6f20" node_id="1" api_capabilities="0" controller_capabilities="8" poll_interval="30000" poll_interval_between="false">
+	<Node id="1" name="" location="" basic="0" generic="0" specific="0" type="" listening="true" frequentListening="false" beaming="false" routing="false" max_baud_rate="0" version="0" query_stage="Complete">
+		<Manufacturer id="0" name="Z-Wave (Sigma Designs)">
+			<Product type="0" id="0" name="Unknown: type=0000, id=0000" />
+		</Manufacturer>
+		<CommandClasses />
+	</Node>
+	<Node id="2" name="" location="" basic="0" generic="0" specific="0" type="" listening="true" frequentListening="false" beaming="false" routing="false" max_baud_rate="0" version="0" query_stage="Complete">
+		<Manufacturer id="0" name="">
+			<Product type="0" id="0" name="" />
+		</Manufacturer>
+		<CommandClasses />
+	</Node>
+</Driver>

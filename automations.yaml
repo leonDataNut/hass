@@ -1,0 +1,820 @@
+- id: '1613177813349'
+  alias: Front Door | Lights | Motion
+  description: ''
+  trigger:
+  - type: motion
+    platform: device
+    device_id: 3fcfdcfc1a0ae62e385f39d9dab33225
+    entity_id: binary_sensor.front_door_motion
+    domain: binary_sensor
+  condition:
+  - condition: device
+    type: is_off
+    device_id: f2c55f6a097300fc20152088efa7c381
+    entity_id: switch.porch_switch_current_value
+    domain: switch
+  action:
+  - type: turn_on
+    device_id: f2c55f6a097300fc20152088efa7c381
+    entity_id: switch.porch_switch_current_value
+    domain: switch
+  - wait_for_trigger:
+    - type: no_motion
+      platform: device
+      device_id: 3fcfdcfc1a0ae62e385f39d9dab33225
+      entity_id: binary_sensor.front_door_motion
+      domain: binary_sensor
+      for:
+        hours: 0
+        minutes: 2
+        seconds: 0
+        milliseconds: 0
+  - type: turn_off
+    device_id: f2c55f6a097300fc20152088efa7c381
+    entity_id: switch.porch_switch_current_value
+    domain: switch
+  mode: restart
+- id: '1613178481173'
+  alias: Garage | Car Door | Auto Close
+  description: ''
+  trigger:
+  - platform: device
+    device_id: c98fb79bd30536c617b79ee7568b3498
+    domain: cover
+    entity_id: cover.car_garage_door
+    type: opened
+  condition: []
+  action:
+  - delay:
+      hours: 0
+      minutes: 20
+      seconds: 0
+      milliseconds: 0
+  - device_id: c98fb79bd30536c617b79ee7568b3498
+    domain: cover
+    entity_id: cover.car_garage_door
+    type: close
+  mode: restart
+- id: '1613239299881'
+  alias: Landscape | Lights | On
+  description: ''
+  trigger:
+  - platform: event
+    event_type: home_mode
+    event_data:
+      status: evening
+  condition: []
+  action:
+  - service: switch.turn_on
+    target:
+      area_id: outside_lights
+  mode: single
+- id: '1613239541147'
+  alias: Accent | Soft Lights | On
+  description: ''
+  trigger:
+  - platform: event
+    event_data:
+      status: true
+      location: inside
+    event_type: accents
+  condition: []
+  action:
+  - service: light.turn_on
+    data:
+      brightness: 100
+      transition: 1800
+      kelvin: 3200
+    entity_id: group.all_accent_lights
+  mode: single
+- id: '1613239985411'
+  alias: MBed | Switch Sync
+  description: ''
+  trigger:
+  - platform: device
+    type: turned_on
+    device_id: d712b0721240a35e074ec46b43c56f64
+    entity_id: light.master_bedroom_switch_current_value
+    domain: light
+  - platform: device
+    type: turned_off
+    device_id: d712b0721240a35e074ec46b43c56f64
+    entity_id: light.master_bedroom_switch_current_value
+    domain: light
+  condition:
+  - condition: sun
+    before: sunset
+    after: sunrise
+  action:
+  - choose:
+    - conditions:
+      - condition: device
+        type: is_on
+        device_id: d712b0721240a35e074ec46b43c56f64
+        entity_id: light.master_bedroom_switch_current_value
+        domain: light
+      sequence:
+      - service: homeassistant.turn_on
+        target:
+          area_id: master_bedroom
+        data: {}
+    - conditions:
+      - condition: device
+        type: is_off
+        device_id: d712b0721240a35e074ec46b43c56f64
+        entity_id: light.master_bedroom_switch_current_value
+        domain: light
+      sequence:
+      - type: turn_off
+        device_id: fe65af78c875b93dc7f68f73e7ad0bae
+        entity_id: light.sengled_e11_n1ea_7f360500_level_light_color_on_off
+        domain: light
+      - type: turn_off
+        device_id: b15c23e6a48b3ea3a42ba94d45e3488e
+        entity_id: light.sengled_e11_n1ea_12700500_level_light_color_on_off
+        domain: light
+    default: []
+  mode: single
+- id: '1613291428950'
+  alias: General | Change Thermo | Weather
+  description: ''
+  trigger:
+  - type: temperature
+    platform: device
+    device_id: 508736148bb2692afef7b4d9fa72cd1e
+    entity_id: sensor.the_white_house_realfeel_temperature
+    domain: sensor
+    below: 60
+  - type: temperature
+    platform: device
+    device_id: 508736148bb2692afef7b4d9fa72cd1e
+    entity_id: sensor.the_white_house_realfeel_temperature
+    domain: sensor
+    above: 78
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - type: is_temperature
+        condition: device
+        device_id: 508736148bb2692afef7b4d9fa72cd1e
+        entity_id: sensor.the_white_house_realfeel_temperature
+        domain: sensor
+        below: 60
+      sequence:
+      - device_id: bf2c9875cf3895d06e7d312d577935d3
+        domain: climate
+        entity_id: climate.lyric_475e58
+        type: set_hvac_mode
+        hvac_mode: heat
+      - device_id: bcd9b2876796f19027479fec1ac93452
+        domain: climate
+        entity_id: climate.lyric_53eece
+        type: set_hvac_mode
+        hvac_mode: heat
+    - conditions:
+      - type: is_temperature
+        condition: device
+        device_id: 508736148bb2692afef7b4d9fa72cd1e
+        entity_id: sensor.the_white_house_realfeel_temperature
+        domain: sensor
+        above: 78
+      sequence:
+      - device_id: bcd9b2876796f19027479fec1ac93452
+        domain: climate
+        entity_id: climate.lyric_53eece
+        type: set_hvac_mode
+        hvac_mode: cool
+      - device_id: bf2c9875cf3895d06e7d312d577935d3
+        domain: climate
+        entity_id: climate.lyric_475e58
+        type: set_hvac_mode
+        hvac_mode: cool
+    default: []
+  mode: single
+- id: '1614055263586'
+  alias: Notify | Low Battery for Leon
+  description: ''
+  trigger:
+  - type: battery_level
+    platform: device
+    device_id: 32867110e4392ea346b794c4eef4860b
+    entity_id: sensor.leon_s_s10_note_phone_battery_level
+    domain: sensor
+    below: 20
+  condition: []
+  action:
+  - service: notify.notify
+    data:
+      message: Leon's Phone is below 20%
+      title: Low Battery Warning
+  mode: single
+- id: '1614058214727'
+  alias: Notify | Low Battery for Chelcie
+  description: ''
+  trigger:
+  - type: battery_level
+    platform: device
+    device_id: 462aabd71239f9abc7206e5af557442f
+    entity_id: sensor.iphone_battery_level
+    domain: sensor
+    below: 20
+  condition: []
+  action:
+  - service: notify.notify
+    data:
+      message: Chelcie's Phone is below 20%
+      title: Low Battery Warning}
+  mode: single
+- id: '1614145330363'
+  alias: General | Charge | Leon
+  description: ''
+  trigger:
+  - type: plugged_in
+    platform: device
+    device_id: 32867110e4392ea346b794c4eef4860b
+    entity_id: binary_sensor.leon_s_s10_note_phone_is_charging
+    domain: binary_sensor
+  - type: not_plugged_in
+    platform: device
+    device_id: 32867110e4392ea346b794c4eef4860b
+    entity_id: binary_sensor.leon_s_s10_note_phone_is_charging
+    domain: binary_sensor
+  condition:
+  - condition: sun
+    after: sunset
+    after_offset: '240'
+  action:
+  - choose:
+    - conditions:
+      - type: is_plugged_in
+        condition: device
+        device_id: 32867110e4392ea346b794c4eef4860b
+        entity_id: binary_sensor.leon_s_s10_note_phone_is_charging
+        domain: binary_sensor
+      sequence:
+      - type: turn_off
+        device_id: b15c23e6a48b3ea3a42ba94d45e3488e
+        entity_id: light.sengled_e11_n1ea_12700500_level_light_color_on_off
+        domain: light
+    - conditions:
+      - type: is_not_plugged_in
+        condition: device
+        device_id: 32867110e4392ea346b794c4eef4860b
+        entity_id: binary_sensor.leon_s_s10_note_phone_is_charging
+        domain: binary_sensor
+      sequence:
+      - type: turn_on
+        device_id: b15c23e6a48b3ea3a42ba94d45e3488e
+        entity_id: light.sengled_e11_n1ea_12700500_level_light_color_on_off
+        domain: light
+    default: []
+  mode: single
+- id: '1614228305223'
+  alias: General | Charge | True | Chelcie
+  description: ''
+  trigger:
+  - platform: event
+    event_type: shortcut_event
+    context: {}
+    event_data:
+      status: charging
+  condition:
+  - condition: sun
+    after: sunset
+    after_offset: '240'
+  action:
+  - type: turn_off
+    device_id: fe65af78c875b93dc7f68f73e7ad0bae
+    entity_id: light.sengled_e11_n1ea_7f360500_level_light_color_on_off
+    domain: light
+  mode: single
+- id: '1614228350557'
+  alias: General | Charge | False | Chelcie
+  description: ''
+  trigger:
+  - platform: event
+    event_type: shortcut_event
+    context: {}
+    event_data:
+      status: not_charging
+  condition:
+  - condition: sun
+    after: sunset
+    after_offset: '240'
+  action:
+  - type: turn_on
+    device_id: fe65af78c875b93dc7f68f73e7ad0bae
+    entity_id: light.sengled_e11_n1ea_7f360500_level_light_color_on_off
+    domain: light
+    brightness_pct: 70
+  mode: single
+- id: '1614384639561'
+  alias: Kitchen | Soft Lights | On
+  description: ''
+  trigger:
+  - platform: event
+    event_data:
+      status: true
+      location: inside
+    event_type: accents
+  condition: []
+  action:
+  - scene: scene.soft_kitchen
+  mode: single
+- id: '1614389565323'
+  alias: MBed | Motion Lights
+  description: ''
+  trigger:
+  - type: turned_on
+    platform: device
+    device_id: 50e63a835459edf995efa1124e1d8891
+    entity_id: binary_sensor.master_bedroom_motion_detector_ias_zone
+    domain: binary_sensor
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 0
+  condition:
+  - condition: device
+    type: is_off
+    device_id: d712b0721240a35e074ec46b43c56f64
+    entity_id: light.master_bedroom_switch_current_value
+    domain: light
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 0
+  action:
+  - repeat:
+      while:
+      - type: is_on
+        condition: device
+        device_id: 50e63a835459edf995efa1124e1d8891
+        entity_id: binary_sensor.master_bedroom_motion_detector_ias_zone
+        domain: binary_sensor
+      sequence:
+      - type: turn_on
+        device_id: d712b0721240a35e074ec46b43c56f64
+        entity_id: light.master_bedroom_switch_current_value
+        domain: light
+        brightness_pct: 70
+      - wait_for_trigger:
+        - type: turned_on
+          platform: device
+          device_id: 50e63a835459edf995efa1124e1d8891
+          entity_id: binary_sensor.master_bedroom_motion_detector_ias_zone
+          domain: binary_sensor
+        timeout: 00:02:00
+        continue_on_timeout: false
+  - type: turn_off
+    device_id: d712b0721240a35e074ec46b43c56f64
+    entity_id: light.master_bedroom_switch_current_value
+    domain: light
+  mode: single
+  max: 10
+- id: '1614416967263'
+  alias: Landscape | Lights | Off
+  description: ''
+  trigger:
+  - platform: time
+    at: '3:00:00'
+  condition: []
+  action:
+  - service: switch.turn_off
+    target:
+      area_id: outside_lights
+  mode: single
+- id: '1614417423602'
+  alias: Kitchen | Soft Lights | Off
+  description: ''
+  trigger:
+  - platform: event
+    event_type: accents
+    event_data:
+      status: false
+      location: inside
+  condition: []
+  action:
+  - type: turn_off
+    device_id: aca2a10b70b758cb2b43da2316b13f27
+    entity_id: light.kitchen_cabinet_switch_current_value_3
+    domain: light
+  - type: turn_off
+    device_id: 91d0fc9d1ae3459c5c94e005cac42115
+    entity_id: light.kitchen_table_switch_current_value_2
+    domain: light
+  mode: single
+- id: '1614417968440'
+  alias: MBed | Soft Lights | Off
+  description: ''
+  trigger:
+  - platform: event
+    event_type: accents
+    event_data:
+      status: false
+      location: inside
+  condition: []
+  action:
+  - type: turn_off
+    device_id: fe65af78c875b93dc7f68f73e7ad0bae
+    entity_id: light.sengled_e11_n1ea_7f360500_level_light_color_on_off
+    domain: light
+  - type: turn_off
+    device_id: b15c23e6a48b3ea3a42ba94d45e3488e
+    entity_id: light.sengled_e11_n1ea_12700500_level_light_color_on_off
+    domain: light
+  - type: turn_off
+    device_id: ac79844758e3b2f4e91b6166e50808e0
+    entity_id: light.master_bedroom_sconces
+    domain: light
+  mode: single
+- id: '1614418650741'
+  alias: Event | Home Mode | Evening
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunset
+  condition: []
+  action:
+  - event: home_mode
+    event_data:
+      status: evening
+  mode: single
+- id: '1614419402410'
+  alias: Event | Home Mode | Morning
+  description: ''
+  trigger:
+  - platform: time
+    at: 07:50:00
+  condition: []
+  action:
+  - event: home_mode
+    event_data:
+      status: morning
+  mode: single
+- id: '1614419792570'
+  alias: Event | Accents | Inside | On
+  description: ''
+  trigger:
+  - platform: event
+    event_data:
+      status: morning
+    event_type: home_mode
+  - platform: event
+    event_type: home_mode
+    event_data:
+      status: evening
+  condition: []
+  action:
+  - event: accents
+    event_data:
+      status: true
+      location: inside
+  mode: single
+- id: '1614447889364'
+  alias: Event | Accents | Inside | Off
+  description: ''
+  trigger:
+  - platform: time
+    at: '9:00:00'
+  - platform: time
+    at: '23:59:59'
+  condition: []
+  action:
+  - event: accents
+    event_data:
+      status: false
+      location: inside
+  mode: single
+- id: '1614559937324'
+  alias: Front door | Auto Lock
+  description: ''
+  trigger:
+  - type: not_opened
+    platform: device
+    device_id: 7525cf49cb4b343e10a921db46e8c9ab
+    entity_id: binary_sensor.front_door
+    domain: binary_sensor
+  - type: motion
+    platform: device
+    device_id: 3fcfdcfc1a0ae62e385f39d9dab33225
+    entity_id: binary_sensor.door_bell_motion
+    domain: binary_sensor
+  - platform: device
+    device_id: 275c4d100797883e201c97d7c1dc3f4a
+    domain: lock
+    entity_id: lock.touchscreen_deadbolt_z_wave_plus_current_lock_mode
+    type: unlocked
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 30
+      milliseconds: 0
+  condition:
+  - type: is_not_open
+    condition: device
+    device_id: 7525cf49cb4b343e10a921db46e8c9ab
+    entity_id: binary_sensor.front_door
+    domain: binary_sensor
+  action:
+  - device_id: 275c4d100797883e201c97d7c1dc3f4a
+    domain: lock
+    entity_id: lock.touchscreen_deadbolt_z_wave_plus_current_lock_mode
+    type: lock
+  mode: single
+  max: 10
+- id: '1614643446146'
+  alias: Garage | Storage Door | Auto Close
+  description: ''
+  trigger:
+  - platform: device
+    device_id: 5581a84ea270e4051ba73f6987733e30
+    domain: cover
+    entity_id: cover.storage_garage_door
+    type: opened
+  condition: []
+  action:
+  - delay:
+      hours: 0
+      minutes: 20
+      seconds: 0
+      milliseconds: 0
+  - device_id: 5581a84ea270e4051ba73f6987733e30
+    domain: cover
+    entity_id: cover.storage_garage_door
+    type: close
+  mode: restart
+- id: '1622491988928'
+  alias: MBath | Motion Lights
+  description: ''
+  trigger:
+  - type: motion
+    platform: device
+    device_id: fe05abe0ef75d0ec0fcb05f30289315e
+    entity_id: binary_sensor.master_bathroom_motion_sensor_1_home_security_motion_detection
+    domain: binary_sensor
+  - type: motion
+    platform: device
+    device_id: db9e1df3bb7325dfd0b9360ef436d688
+    entity_id: binary_sensor.master_bathroom_motion_sensor_2_home_security_motion_detection
+    domain: binary_sensor
+  condition: []
+  action:
+  - type: turn_on
+    device_id: 949e28a700da955f746bbf24d8666200
+    entity_id: light.master_bathroom_switch
+    domain: light
+    brightness_pct: 70
+  - delay:
+      hours: 0
+      minutes: 15
+      seconds: 0
+      milliseconds: 0
+  - type: turn_off
+    device_id: 949e28a700da955f746bbf24d8666200
+    entity_id: light.master_bathroom_switch
+    domain: light
+  mode: restart
+- id: '1623730310544'
+  alias: Downstairs | Thermostat | Hot Nights
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunset
+    offset: '2:00:00'
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - type: is_temperature
+        condition: device
+        device_id: 508736148bb2692afef7b4d9fa72cd1e
+        entity_id: sensor.the_white_house_realfeel_temperature
+        domain: sensor
+        above: 74
+      sequence:
+      - service: climate.set_temperature
+        target:
+          device_id: bcd9b2876796f19027479fec1ac93452
+        data:
+          temperature: 69
+          hvac_mode: cool
+    default: []
+  mode: single
+- id: '1623730938211'
+  alias: Downstairs | Thermostat | Hot Mornings
+  description: ''
+  trigger:
+  - platform: time
+    at: 07:00:0000
+  condition:
+  - type: is_temperature
+    condition: device
+    device_id: 508736148bb2692afef7b4d9fa72cd1e
+    entity_id: sensor.the_white_house_realfeel_temperature
+    domain: sensor
+    above: 65
+  action:
+  - service: climate.set_temperature
+    data:
+      temperature: 74
+    target:
+      device_id: bcd9b2876796f19027479fec1ac93452
+  mode: single
+- id: '1624140951260'
+  alias: MBed | Auto Fan
+  description: ''
+  trigger:
+  - type: temperature
+    platform: device
+    device_id: 50e63a835459edf995efa1124e1d8891
+    entity_id: sensor.master_bedroom_motion_detector_temperature
+    domain: sensor
+    above: 72
+  - type: temperature
+    platform: device
+    device_id: 50e63a835459edf995efa1124e1d8891
+    entity_id: sensor.master_bedroom_motion_detector_temperature
+    domain: sensor
+    below: 70
+  - type: turned_on
+    platform: device
+    device_id: 50e63a835459edf995efa1124e1d8891
+    entity_id: binary_sensor.master_bedroom_motion_detector_ias_zone
+    domain: binary_sensor
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - type: is_temperature
+        condition: device
+        device_id: 50e63a835459edf995efa1124e1d8891
+        entity_id: sensor.master_bedroom_motion_detector_temperature
+        domain: sensor
+        above: 0
+        below: 70
+      sequence:
+      - type: turn_off
+        device_id: b41a390817b22e7eaf16497c3666341a
+        entity_id: switch.master_bedroom_fan
+        domain: switch
+    default:
+    - type: turn_on
+      device_id: b41a390817b22e7eaf16497c3666341a
+      entity_id: switch.master_bedroom_fan
+      domain: switch
+  mode: restart
+- id: '1628131180326'
+  alias: Security | Event | Open Sensor
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: group.all_external_sensors
+    from: 'off'
+    to: 'on'
+  condition: []
+  action:
+  - event: Security
+    event_data:
+      status: open_sensor
+      message: "{%- for group in states('trigger.to_state.attributes.entity_id') %}\n\
+        \  {%- for entity in state_attr(group,'entity_id') %}\n    {%- if states(entity)\
+        \ == 'on' %}  {{state_attr(entity,'friendly_name')}} open. {%- endif %}\n\
+        \  {%- endfor %}\n{%- endfor %}\n"
+  mode: queued
+  max: 10
+- id: '1628473446601'
+  alias: Security | Event | Closed Sensor
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: group.all_external_sensors
+    to: 'off'
+    from: 'on'
+  condition: []
+  action:
+  - event: Security
+    event_data:
+      status: closed_sensor
+      message: '{{states[trigger.entity_id.split(".")[0]][ trigger.entity_id.split(".")[1]].name}}
+        closed.
+
+        '
+  mode: queued
+  max: 10
+- id: '1628474560554'
+  alias: Security Notifications
+  description: ''
+  trigger:
+  - platform: event
+    event_type: Security
+  condition: []
+  action:
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.alexa_message
+    data:
+      value: '{{trigger.event.data.message}}'
+  - service: rest_command.announce_kitchen
+  - service: rest_command.announce_leon_bedroom_alexa
+  - service: notify.notify
+    data:
+      title: Security Notification
+      message: '{{trigger.event.data.message}}'
+  mode: queued
+  max: 10
+- id: '1628478328970'
+  alias: 'Front Door Lock | Event | Monitoring '
+  description: ''
+  trigger:
+  - platform: device
+    device_id: 275c4d100797883e201c97d7c1dc3f4a
+    domain: lock
+    entity_id: lock.touchscreen_deadbolt_z_wave_plus_current_lock_mode
+    type: unlocked
+  - platform: device
+    device_id: 275c4d100797883e201c97d7c1dc3f4a
+    domain: lock
+    entity_id: lock.touchscreen_deadbolt_z_wave_plus_current_lock_mode
+    type: locked
+  - platform: device
+    device_id: 275c4d100797883e201c97d7c1dc3f4a
+    domain: lock
+    entity_id: lock.touchscreen_deadbolt_z_wave_plus_current_lock_mode
+    type: jammed
+  - type: battery_level
+    platform: device
+    device_id: 275c4d100797883e201c97d7c1dc3f4a
+    entity_id: sensor.touchscreen_deadbolt_z_wave_plus_battery_level
+    domain: sensor
+    below: 40
+  condition: []
+  action:
+  - event: Security
+    event_data:
+      status: lock_monitoring
+      message: '{{states[trigger.entity_id.split(".")[0]][ trigger.entity_id.split(".")[1]].name}}
+        is {{trigger.to_state.state}}.
+
+        '
+  mode: single
+- id: '1631104788030'
+  alias: Security | Event | Door | Closed Sensor
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: group.door_sensors
+    to: 'off'
+    from: 'on'
+  condition: []
+  action:
+  - event: Security
+    event_data:
+      status: closed_sensor
+      message: '{{states[trigger.entity_id.split(".")[0]][ trigger.entity_id.split(".")[1]].name}}
+        closed.
+
+        '
+  mode: queued
+  max: 10
+- id: '1631104820650'
+  alias: Security | Event | Door | Open Sensor
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: group.door_sensors
+    to: 'on'
+    from: 'off'
+  condition: []
+  action:
+  - event: Security
+    event_data:
+      status: closed_sensor
+      message: '{{states[trigger.entity_id.split(".")[0]][ trigger.entity_id.split(".")[1]].name}}
+        closed.
+
+        '
+  mode: queued
+  max: 10
+- id: '1631423206579'
+  alias: New Automationtest
+  description: ''
+  trigger:
+  - type: battery_level
+    platform: device
+    device_id: 3fcfdcfc1a0ae62e385f39d9dab33225
+    entity_id: sensor.door_bell_battery
+    domain: sensor
+    below: 9
+  condition: []
+  action:
+  - service: light.turn_on
+    data:
+      transition: 40
+      brightness_pct: 50
+    target:
+      device_id: aca2a10b70b758cb2b43da2316b13f27
+  mode: single

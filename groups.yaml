@@ -1,0 +1,75 @@
+
+# Master Bedroom Lights
+ master_bedroom_lights:
+  name: Master Bedroom Lights Group
+  entities:
+   - light.master_bedroom_switch_current_value
+   - light.sengled_e11_n1ea_12700500_level_light_color_on_off
+   - light.sengled_e11_n1ea_7f360500_level_light_color_on_off
+   
+ master_bedroom_lamps:
+  name: Master Bedroom Lamps Group
+  entities:
+   - light.sengled_e11_n1ea_7f360500_level_light_color_on_off
+   - light.sengled_e11_n1ea_12700500_level_light_color_on_off
+
+# Kitchen Lights
+ kitchen_lights:
+  name: Kitchen Lights
+  entities:
+   - light.kitchen_cabinet_switch_current_value_3
+   - light.kitchen_table_switch_current_value_2
+
+# Kitchen Accent Lights
+ kitchen_accent_lights:
+  name: Kitchen Accent Lights
+  entities:
+   - light.kitchen_table_switch_current_value_2
+   - light.kitchen_cabinet_switch_current_value_3
+ 
+# All Accent Lights
+ all_accent_lights:
+  name: All Accent Lights
+  entities:
+   - group.master_bedroom_lamps
+   - group.kitchen_accent_lights
+   - light.master_bedroom_sconces
+   
+# Landscaping Lights:
+ landscaping_lights:
+  name: Landscaping Lights
+  entities:
+   - switch.porch_switch_current_value
+   - switch.in_wall_smart_switch_current_value_2
+   - switch.car_garage_landscape_light_switch
+
+# Door Sensors
+ door_sensors:
+  name: Door Sensors
+  entities:
+   - binary_sensor.car_garage_door
+   - binary_sensor.front_door
+   - binary_sensor.storage_garage_door
+   
+# Window Sensors
+ window_sensors:
+  name: Window Sensors
+  entities:
+   - binary_sensor.garage_window
+   - binary_sensor.window_all_upstairs
+   
+# Garage Door Sensors
+ garage_door_sensors:
+  name: Garage Door Sensors
+  entities:
+   - binary_sensor.car_garage_door
+   - binary_sensor.storage_garage_door
+   
+# All External Sensors
+ all_external_sensors:
+  name: All External Sensors
+  entities:
+   - group.door_sensors
+   - group.garage_door_sensors
+   
+ 

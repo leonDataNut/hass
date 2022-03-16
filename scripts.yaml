@@ -1,0 +1,62 @@
+kitchen_all_off:
+  alias: MBed | All Off
+  sequence:
+  - service: homeassistant.turn_off
+    target:
+      area_id: master_bedroom
+    data: {}
+  mode: single
+  icon: hass:power
+mbed_all_on:
+  alias: Accent Lights | Inside | On
+  sequence:
+  - service: light.turn_on
+    data:
+      entity_id: group.all_accent_lights
+      brightness: 50
+      transition: 50
+      kelvin: 2800
+  mode: single
+  icon: hass:power
+mbed_all_night_light:
+  alias: MBed | All | Night Light
+  sequence:
+  - service: light.turn_on
+    data:
+      entity_id: group.master_bedroom_lights
+      brightness: 70
+      transition: 0
+      kelvin: 2300
+    entity_id: group.master_bedroom_lights
+  mode: single
+  icon: hass:power
+accent_lights_inside_off:
+  alias: Accent Lights | Inside | Off
+  sequence:
+  - service: light.turn_off
+    data:
+      entity_id: group.all_accent_lights
+      transition: 50
+  mode: single
+  icon: hass:power
+lock_all_exterior:
+  sequence:
+  - device_id: 275c4d100797883e201c97d7c1dc3f4a
+    domain: lock
+    entity_id: lock.touchscreen_deadbolt_z_wave_plus_current_lock_mode
+    type: lock
+  - device_id: 5581a84ea270e4051ba73f6987733e30
+    domain: cover
+    entity_id: cover.storage_garage_door
+    type: close
+  - device_id: c98fb79bd30536c617b79ee7568b3498
+    domain: cover
+    entity_id: cover.car_garage_door
+    type: close
+  - event: Security
+    event_data:
+      status: House Secured
+      message: The White House is Secure
+  mode: single
+  icon: hass:lock
+  alias: Secure the perimeter

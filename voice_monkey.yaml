@@ -1,0 +1,19 @@
+announce_kitchen:
+    url: https://api.voicemonkey.io/trigger
+    method: POST
+    content_type:  'application/json; charset=utf-8'
+    payload: >
+        {% set msg = '"access_token": "ccf25320adddb86aee7a2455464abd17", "secret_token": "1bb318bd627b714eab56d9b22a16f1d8", "monkey": "test", "notification": "TRUE" ,"announcement":"' %}
+
+        {## Output ##}
+        {{"{" + msg + states('input_text.alexa_message') + '" }'}}
+
+announce_leon_bedroom_alexa:
+    url: https://api.voicemonkey.io/trigger
+    method: POST
+    content_type:  'application/json; charset=utf-8'
+    payload: >
+        {% set msg = '"access_token": "ccf25320adddb86aee7a2455464abd17", "secret_token": "1bb318bd627b714eab56d9b22a16f1d8", "monkey": "leonbedroomalexa", "notification": "TRUE" ,"announcement":"' %}
+
+        {## Output ##}
+        {{"{" + msg + states('input_text.alexa_message') + '" }'}}   

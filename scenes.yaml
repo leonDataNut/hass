@@ -1,0 +1,36 @@
+- id: '1613102225555'
+  name: Soft Bedroom Lamps
+  entities:
+    light.sengled_e11_n1ea_12700500_level_light_color_on_off:
+      min_mireds: 154
+      max_mireds: 500
+      brightness: 102
+      color_temp: 370
+      off_brightness:
+      friendly_name: Leon's Bed Lamp
+      supported_features: 59
+      state: 'on'
+    light.sengled_e11_n1ea_7f360500_level_light_color_on_off:
+      min_mireds: 154
+      max_mireds: 500
+      brightness: 94
+      color_temp: 370
+      off_brightness:
+      friendly_name: Chelcie's Bed Lamp
+      supported_features: 59
+      state: 'on'
+  icon: hass:lightbulb
+- id: '1614311007598'
+  name: Soft Kitchen
+  entities:
+    light.kitchen_table_switch_current_value_2:
+      brightness: 44
+      friendly_name: Kitchen Table Switch
+      supported_features: 33
+      state: 'on'
+    light.kitchen_cabinet_switch_current_value_3:
+      brightness: 36
+      friendly_name: Kitchen Cabinet Lights
+      supported_features: 33
+      state: 'on'
+  icon: hass:lightbulb
